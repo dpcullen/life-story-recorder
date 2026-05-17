@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Family Story</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="app">
+        <div id="welcome-screen" class="screen active">
+            <div class="welcome-container">
+                <h1>Our Family Story</h1>
+                <p class="subtitle">A collection of memories, stories, and wisdom to treasure forever.</p>
+                <p class="instructions">Choose who is answering today. You can come back anytime — your answers are saved automatically.</p>
+                <div class="person-buttons">
+                    <button class="person-btn" onclick="selectPerson('Mom')">
+                        <span class="person-icon">👩</span>
+                        <span>Mom</span>
+                    </button>
+                    <button class="person-btn" onclick="selectPerson('Dad')">
+                        <span class="person-icon">👨</span>
+                        <span>Dad</span>
+                    </button>
+                </div>
+                <div class="admin-link">
+                    <button class="link-btn" onclick="showBookExport()">📖 Create the Book</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="questions-screen" class="screen">
+            <header>
+                <button class="back-btn" onclick="goHome()">← Home</button>
+                <h2 id="current-person-name"></h2>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <p class="progress-text" id="progress-text"></p>
+            </header>
+            <div class="themes-container" id="themes-container"></div>
+        </div>
+
+        <div id="theme-screen" class="screen">
+            <header>
+                <button class="back-btn" onclick="goToThemes()">← Back to Themes</button>
+                <h2 id="theme-title"></h2>
+                <p class="theme-description" id="theme-description"></p>
+            </header>
+            <div class="questions-container" id="questions-container"></div>
+        </div>
+
+        <div id="book-screen" class="screen">
+            <header>
+                <button class="back-btn" onclick="goHome()">← Home</button>
+                <h2>Create Your Book</h2>
+            </header>
+            <div class="book-options">
+                <p>Choose whose stories to include:</p>
+                <div class="book-person-select">
+                    <label><input type="checkbox" id="include-mom" checked> Mom's Stories</label>
+                    <label><input type="checkbox" id="include-dad" checked> Dad's Stories</label>
+                </div>
+                <button class="export-btn" onclick="generateBook()">📖 Generate Printable Book</button>
+                <p class="hint">This will open a beautifully formatted page. Use your browser's Print function (Ctrl+P or Cmd+P) to save as PDF or print directly.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="save-indicator" class="save-indicator hidden">✓ Saved</div>
+
+    <script src="questions.js"></script>
+    <script src="app.js"></script>
+    <script src="book.js"></script>
+</body>
+</html>
