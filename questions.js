@@ -6,44 +6,35 @@ const THEMES = [
         description: "Stories from your earliest days and the world you grew up in.",
         questions: [
             {
-                id: "birth", text: "Where and when were you born? What do you know about the day you arrived?",
-                followUps: ["Was there a story your parents told about the day you were born?", "What was the town or city like back then?"]
+                id: "birth", text: "Where and when were you born? What do you know about the day you arrived?"
             },
             {
                 id: "earliest_memory", text: "What is your earliest memory?",
-                voicePrompt: true,
-                followUps: ["How old were you?", "What feelings come up when you think about it?"]
+                voicePrompt: true
             },
             {
                 id: "childhood_home", text: "Describe the home you grew up in. What did it look like, smell like, feel like?",
-                voicePrompt: true,
-                followUps: ["Did you share a bedroom?", "What was your favorite room or spot in the house?"]
+                voicePrompt: true
             },
             {
-                id: "neighborhood", text: "What was your neighborhood like? Who were your neighbors?",
-                followUps: ["Were there any characters or memorable people on your street?"]
+                id: "neighborhood", text: "What was your neighborhood like? Who were your neighbors?"
             },
             {
-                id: "childhood_friends", text: "Who were your closest childhood friends? What did you do together?",
-                followUps: ["Are you still in touch with any of them?", "What's your best memory together?"]
+                id: "childhood_friends", text: "Who were your closest childhood friends? What did you do together?"
             },
             {
-                id: "favorite_games", text: "What games did you play as a child? What were your favorite toys?",
-                followUps: ["Did you play outside a lot?", "Were there games you made up yourself?"]
+                id: "favorite_games", text: "What games did you play as a child? What were your favorite toys?"
             },
             {
-                id: "school_memories", text: "What do you remember about school? Did you have a favorite teacher?",
-                followUps: ["What subjects did you love or hate?", "What made that teacher special?"]
+                id: "school_memories", text: "What do you remember about school? Did you have a favorite teacher?"
             },
             {
-                id: "childhood_trouble", text: "Did you ever get into trouble as a kid? What happened?",
-                followUps: ["How did your parents react?", "Would you do it again?"]
+                id: "childhood_trouble", text: "Did you ever get into trouble as a kid? What happened?"
             },
             { id: "childhood_fears", text: "What were you afraid of as a child?" },
             {
                 id: "happiest_childhood", text: "What is your happiest childhood memory?",
-                voicePrompt: true,
-                followUps: ["Who was there?", "Why do you think this one stands out above all others?"]
+                voicePrompt: true
             }
         ]
     },
@@ -54,48 +45,38 @@ const THEMES = [
         description: "Your family tree, traditions, and where you come from.",
         questions: [
             {
-                id: "parents_names", text: "What were your parents' full names? Where were they from?",
-                followUps: ["What did they do for work?", "What were their ages when they had you?"]
+                id: "parents_names", text: "What were your parents' full names? Where were they from?"
             },
             {
                 id: "parents_story", text: "What do you know about how your parents met?",
-                voicePrompt: true,
-                followUps: ["Who told you this story?", "How long did they date before marrying?"]
+                voicePrompt: true
             },
             {
                 id: "parents_personalities", text: "How would you describe your mother's personality? Your father's?",
-                voicePrompt: true,
-                followUps: ["Which parent are you more like?", "What's a moment that really captures who they were?"]
+                voicePrompt: true
             },
             {
-                id: "siblings", text: "Tell me about your brothers and sisters. What was your relationship like?",
-                followUps: ["Did you fight a lot? What about?", "Who were you closest to?"]
+                id: "siblings", text: "Tell me about your brothers and sisters. What was your relationship like?"
             },
             {
                 id: "grandparents", text: "What do you remember about your grandparents?",
-                voicePrompt: true,
-                followUps: ["Did you visit them often?", "What did their home feel like?"]
+                voicePrompt: true
             },
             {
-                id: "family_traditions", text: "What traditions did your family have? Holidays, meals, gatherings?",
-                followUps: ["Which tradition do you miss the most?", "Have you carried any of them forward?"]
+                id: "family_traditions", text: "What traditions did your family have? Holidays, meals, gatherings?"
             },
             {
-                id: "family_saying", text: "Did your family have any sayings, expressions, or inside jokes?",
-                followUps: ["Where did they come from?", "Do you still use any of them?"]
+                id: "family_saying", text: "Did your family have any sayings, expressions, or inside jokes?"
             },
             {
-                id: "heritage", text: "What do you know about your family's heritage or where your ancestors came from?",
-                followUps: ["Were there any family stories about the old country?", "Did your heritage shape how you were raised?"]
+                id: "heritage", text: "What do you know about your family's heritage or where your ancestors came from?"
             },
             {
-                id: "family_recipes", text: "Are there any family recipes that have been passed down? What are they?",
-                followUps: ["Who was the best cook in the family?", "Is there a dish that instantly takes you back?"]
+                id: "family_recipes", text: "Are there any family recipes that have been passed down? What are they?"
             },
             {
                 id: "family_lessons", text: "What is the most important thing your parents taught you?",
-                voicePrompt: true,
-                followUps: ["Did they teach it directly or did you learn by watching them?"]
+                voicePrompt: true
             }
         ]
     },
@@ -106,39 +87,31 @@ const THEMES = [
         description: "Coming of age — your teenage adventures and discoveries.",
         questions: [
             {
-                id: "teen_personality", text: "What kind of teenager were you? Quiet, rebellious, studious, social?",
-                followUps: ["Would your friends have described you the same way?"]
+                id: "teen_personality", text: "What kind of teenager were you? Quiet, rebellious, studious, social?"
             },
             {
-                id: "high_school", text: "What was high school like for you? What did you enjoy or struggle with?",
-                followUps: ["Were you involved in any sports, clubs, or activities?", "What was the social scene like?"]
+                id: "high_school", text: "What was high school like for you? What did you enjoy or struggle with?"
             },
             {
-                id: "teen_friends", text: "Who were your best friends as a teenager? Are you still in touch?",
-                followUps: ["What did you do for fun together?", "Is there a story that sums up your friendship?"]
+                id: "teen_friends", text: "Who were your best friends as a teenager? Are you still in touch?"
             },
             {
-                id: "first_job", text: "What was your first job? How much did you earn?",
-                followUps: ["What did you spend your money on?", "What did the job teach you?"]
+                id: "first_job", text: "What was your first job? How much did you earn?"
             },
             {
-                id: "teen_music", text: "What music did you listen to? Did you go to any concerts?",
-                followUps: ["Was there a song that defined that time in your life?"]
+                id: "teen_music", text: "What music did you listen to? Did you go to any concerts?"
             },
             { id: "teen_fashion", text: "What did you wear? What was the style back then?" },
             {
-                id: "teen_crush", text: "Did you have a first crush or first date? What happened?",
-                followUps: ["Were you nervous?", "Do you remember what you wore or where you went?"]
+                id: "teen_crush", text: "Did you have a first crush or first date? What happened?"
             },
             { id: "teen_car", text: "Did you learn to drive? What was your first car?" },
             {
-                id: "teen_dream", text: "What did you dream of becoming when you grew up?",
-                followUps: ["What inspired that dream?", "How did it compare to what actually happened?"]
+                id: "teen_dream", text: "What did you dream of becoming when you grew up?"
             },
             {
                 id: "teen_lesson", text: "What's something important that happened to you as a teenager that shaped who you became?",
-                voicePrompt: true,
-                followUps: ["Did you realize its importance at the time, or only later?"]
+                voicePrompt: true
             }
         ]
     },
@@ -150,35 +123,28 @@ const THEMES = [
         questions: [
             {
                 id: "how_met", text: "How did you and your spouse meet? What were your first impressions?",
-                voicePrompt: true,
-                followUps: ["Did you know right away that this person was special?", "What were you each doing at that point in your lives?"]
+                voicePrompt: true
             },
             {
-                id: "first_date", text: "What was your first date like? Where did you go?",
-                followUps: ["Who asked who?", "Were you nervous?"]
+                id: "first_date", text: "What was your first date like? Where did you go?"
             },
             {
                 id: "falling_in_love", text: "When did you know you were in love? Was there a specific moment?",
-                voicePrompt: true,
-                followUps: ["Did you tell anyone?", "How long had you been together at that point?"]
+                voicePrompt: true
             },
             {
                 id: "proposal", text: "How did the proposal happen? Tell me every detail.",
-                voicePrompt: true,
-                followUps: ["Were you surprised?", "Who did you tell first?"]
+                voicePrompt: true
             },
             {
                 id: "wedding_day", text: "Describe your wedding day. What do you remember most?",
-                voicePrompt: true,
-                followUps: ["What was the best moment?", "Was there anything that went wrong or was funny?"]
+                voicePrompt: true
             },
             {
-                id: "early_marriage", text: "What were the early days of your marriage like? Where did you live?",
-                followUps: ["What surprised you about married life?"]
+                id: "early_marriage", text: "What were the early days of your marriage like? Where did you live?"
             },
             {
-                id: "marriage_challenges", text: "What has been the hardest part of marriage? How did you get through tough times?",
-                followUps: ["What did those experiences teach you about each other?"]
+                id: "marriage_challenges", text: "What has been the hardest part of marriage? How did you get through tough times?"
             },
             { id: "marriage_joy", text: "What has brought you the most joy in your marriage?" },
             {
@@ -199,42 +165,33 @@ const THEMES = [
         questions: [
             {
                 id: "becoming_parent", text: "How did you feel when you found out you were going to be a parent?",
-                voicePrompt: true,
-                followUps: ["Were you scared, excited, or both?", "Who did you tell first?"]
+                voicePrompt: true
             },
             {
                 id: "child_birth", text: "What do you remember about the day your first child was born?",
-                voicePrompt: true,
-                followUps: ["What was going through your mind?", "What did you feel when you first held them?"]
+                voicePrompt: true
             },
             {
-                id: "baby_memories", text: "What were your children like as babies? Any funny stories?",
-                followUps: ["Were they easy or difficult babies?", "What's a story you love to retell?"]
+                id: "baby_memories", text: "What were your children like as babies? Any funny stories?"
             },
             {
-                id: "parenting_style", text: "How would you describe your parenting style? Was it different from your own parents?",
-                followUps: ["What did you consciously do differently?", "What did you keep the same?"]
+                id: "parenting_style", text: "How would you describe your parenting style? Was it different from your own parents?"
             },
             {
                 id: "proud_moments", text: "What moments as a parent have made you most proud?",
-                voicePrompt: true,
-                followUps: ["What was it about that moment that hit you so deeply?"]
+                voicePrompt: true
             },
             {
-                id: "parenting_hard", text: "What was the hardest part of being a parent?",
-                followUps: ["How did you handle it?", "Would you do anything differently?"]
+                id: "parenting_hard", text: "What was the hardest part of being a parent?"
             },
             {
-                id: "family_vacations", text: "What were family vacations like? Any memorable trips?",
-                followUps: ["What's your favorite family travel memory?", "Were there any disasters that are funny now?"]
+                id: "family_vacations", text: "What were family vacations like? Any memorable trips?"
             },
             {
-                id: "daily_routines", text: "What did a typical day look like when your kids were young?",
-                followUps: ["What part of the routine do you miss?"]
+                id: "daily_routines", text: "What did a typical day look like when your kids were young?"
             },
             {
-                id: "child_personalities", text: "How would you describe each of your children's personalities growing up?",
-                followUps: ["When did their personalities start showing?", "How are they similar to or different from you?"]
+                id: "child_personalities", text: "How would you describe each of your children's personalities growing up?"
             },
             {
                 id: "parent_wisdom", text: "What do you wish you had known before becoming a parent?",
@@ -249,21 +206,17 @@ const THEMES = [
         description: "Your professional life and what you built.",
         questions: [
             {
-                id: "career_path", text: "How did you end up in your career? Was it planned or did it just happen?",
-                followUps: ["Was there a moment where your path became clear?"]
+                id: "career_path", text: "How did you end up in your career? Was it planned or did it just happen?"
             },
             {
-                id: "favorite_job", text: "What was your favorite job and why?",
-                followUps: ["What made it so special?"]
+                id: "favorite_job", text: "What was your favorite job and why?"
             },
             {
-                id: "work_proud", text: "What accomplishment in your career are you most proud of?",
-                followUps: ["Who else was involved?", "How did it feel at the time?"]
+                id: "work_proud", text: "What accomplishment in your career are you most proud of?"
             },
             { id: "work_people", text: "Who were the most memorable people you worked with?" },
             {
-                id: "work_hard", text: "What was the most difficult time in your working life?",
-                followUps: ["How did you get through it?", "Did it change your perspective?"]
+                id: "work_hard", text: "What was the most difficult time in your working life?"
             },
             { id: "boss_mentor", text: "Did you have a boss or mentor who really influenced you?" },
             { id: "work_funny", text: "What's a funny story from work?" },
@@ -280,21 +233,17 @@ const THEMES = [
         questions: [
             {
                 id: "proudest_moment", text: "What is the proudest moment of your life?",
-                voicePrompt: true,
-                followUps: ["Who was with you?", "How do you feel looking back on it now?"]
+                voicePrompt: true
             },
             {
                 id: "biggest_challenge", text: "What is the biggest challenge you've faced? How did you overcome it?",
-                voicePrompt: true,
-                followUps: ["What kept you going?", "What did it teach you about yourself?"]
+                voicePrompt: true
             },
             {
-                id: "travel", text: "What is the most memorable place you've ever visited?",
-                followUps: ["What made it so memorable?", "Would you go back?"]
+                id: "travel", text: "What is the most memorable place you've ever visited?"
             },
             {
-                id: "historical_events", text: "What major historical events do you remember living through? How did they affect you?",
-                followUps: ["Where were you when it happened?", "How did it change your community?"]
+                id: "historical_events", text: "What major historical events do you remember living through? How did they affect you?"
             },
             { id: "surprise", text: "What's something that happened in your life that you never expected?" },
             { id: "friendship", text: "Tell me about your closest friendships over the years." },
@@ -302,8 +251,7 @@ const THEMES = [
             { id: "home_story", text: "Tell me about the different homes you've lived in. Which was your favorite?" },
             {
                 id: "turning_point", text: "Was there a turning point or defining moment in your life?",
-                voicePrompt: true,
-                followUps: ["Did you recognize it as a turning point at the time?"]
+                voicePrompt: true
             },
             { id: "adventure", text: "What's the most adventurous thing you've ever done?" }
         ]
@@ -315,8 +263,7 @@ const THEMES = [
         description: "What you believe in and what matters most to you.",
         questions: [
             {
-                id: "values", text: "What values are most important to you? Where did they come from?",
-                followUps: ["How have you tried to pass them on?"]
+                id: "values", text: "What values are most important to you? Where did they come from?"
             },
             { id: "faith", text: "What role has faith or spirituality played in your life?" },
             { id: "life_philosophy", text: "What is your philosophy on life? How do you try to live?" },
@@ -326,8 +273,7 @@ const THEMES = [
             },
             {
                 id: "gratitude", text: "What are you most grateful for in your life?",
-                voicePrompt: true,
-                followUps: ["Has what you're grateful for changed over the years?"]
+                voicePrompt: true
             },
             { id: "regrets", text: "Is there anything you wish you had done differently?" },
             { id: "forgiveness", text: "Has there been a time when forgiveness was important in your life?" },
@@ -347,21 +293,18 @@ const THEMES = [
         questions: [
             {
                 id: "life_lessons", text: "What are the most important lessons life has taught you?",
-                voicePrompt: true,
-                followUps: ["How did you learn them — through experience or from someone else?"]
+                voicePrompt: true
             },
             {
                 id: "advice_grandchild", text: "What advice would you give to your grandchildren as they grow up?",
-                voicePrompt: true,
-                followUps: ["What do you hope they'll remember about you?"]
+                voicePrompt: true
             },
             {
                 id: "younger_self", text: "If you could go back and tell your younger self one thing, what would it be?",
                 voicePrompt: true
             },
             {
-                id: "world_change", text: "How has the world changed most during your lifetime?",
-                followUps: ["What changes have been for the better?", "What do you miss about the way things were?"]
+                id: "world_change", text: "How has the world changed most during your lifetime?"
             },
             { id: "simple_pleasures", text: "What are the simple pleasures in life that you treasure?" },
             {
@@ -370,8 +313,7 @@ const THEMES = [
             },
             {
                 id: "family_message", text: "Is there anything you've never said to your family that you'd like to say now?",
-                voicePrompt: true,
-                followUps: ["Why haven't you said it until now?"]
+                voicePrompt: true
             },
             { id: "life_motto", text: "Do you have a motto or saying you live by?" },
             {

@@ -261,13 +261,6 @@ function renderQuestions() {
         const recordBtnClass = isRecording ? 'record-btn recording' : 'record-btn';
         const recordBtnText = isRecording ? '⏹ Stop Recording' : '🎙️ Record Your Voice';
 
-        const followUpHTML = q.followUps && answer.trim()
-            ? `<div class="follow-ups">
-                 <p class="follow-up-label">Want to add more detail?</p>
-                 ${q.followUps.map(f => `<span class="follow-up-chip" onclick="appendFollowUp('${q.id}', this)">${f}</span>`).join('')}
-               </div>`
-            : '';
-
         card.innerHTML = `
             <div class="question-number">Question ${index + 1}</div>
             <label class="question-text" for="q-${q.id}">${q.text}</label>
@@ -277,7 +270,6 @@ function renderQuestions() {
                 placeholder="Take your time... write as much or as little as you'd like."
                 oninput="handleInput('${currentTheme.id}', '${q.id}', this.value)"
             >${answer}</textarea>
-            ${followUpHTML}
             <div class="question-actions">
                 <div class="photo-upload">
                     <label class="photo-btn">
@@ -298,16 +290,6 @@ function renderQuestions() {
 
 function escapeAttr(str) {
     return str.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-}
-
-function appendFollowUp(questionId, chip) {
-    const textarea = document.getElementById('q-' + questionId);
-    const followUpText = chip.textContent;
-    textarea.value = textarea.value.trimEnd() + '\n\n' + followUpText + '\n';
-    textarea.focus();
-    textarea.scrollTop = textarea.scrollHeight;
-    handleInput(currentTheme.id, questionId, textarea.value);
-    chip.classList.add('used');
 }
 
 function handleInput(themeId, questionId, value) {

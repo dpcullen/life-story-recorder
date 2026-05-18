@@ -478,41 +478,6 @@ textarea::placeholder {
     color: #c0392b;
 }
 
-/* Follow-up Prompts */
-.follow-ups {
-    margin-top: 12px;
-    margin-bottom: 8px;
-}
-
-.follow-up-label {
-    font-size: 0.85em;
-    color: #888;
-    margin-bottom: 8px;
-}
-
-.follow-up-chip {
-    display: inline-block;
-    padding: 6px 14px;
-    margin: 4px 6px 4px 0;
-    font-size: 0.85em;
-    background: #f0ece6;
-    border: 1px solid #ddd;
-    border-radius: 20px;
-    color: #555;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.follow-up-chip:hover {
-    background: #e8e2d8;
-    border-color: #bbb;
-}
-
-.follow-up-chip.used {
-    opacity: 0.4;
-    pointer-events: none;
-}
-
 /* Save Indicator */
 .save-indicator {
     position: fixed;
