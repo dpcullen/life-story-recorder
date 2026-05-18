@@ -8,11 +8,7 @@ let recognition = null;
 
 function getSettings() {
     const raw = localStorage.getItem('story_settings');
-    const defaults = { personNames: { Mom: 'Mom', Dad: 'Dad', Grandma: 'Grandma' } };
-    if (!raw) return defaults;
-    const parsed = JSON.parse(raw);
-    if (!parsed.personNames.Grandma) parsed.personNames.Grandma = 'Grandma';
-    return parsed;
+    return raw ? JSON.parse(raw) : { personNames: { Mom: 'Mom', Dad: 'Dad' } };
 }
 
 function saveSettings(settings) {
@@ -28,14 +24,12 @@ function initWelcome() {
     const settings = getSettings();
     document.getElementById('mom-btn-label').textContent = settings.personNames.Mom;
     document.getElementById('dad-btn-label').textContent = settings.personNames.Dad;
-    document.getElementById('grandma-btn-label').textContent = settings.personNames.Grandma;
 }
 
 function showNameSetup() {
     const settings = getSettings();
     document.getElementById('mom-name-input').value = settings.personNames.Mom;
     document.getElementById('dad-name-input').value = settings.personNames.Dad;
-    document.getElementById('grandma-name-input').value = settings.personNames.Grandma;
     document.getElementById('name-setup-modal').classList.add('visible');
 }
 
@@ -46,11 +40,9 @@ function closeNameSetup() {
 function saveNames() {
     const momName = document.getElementById('mom-name-input').value.trim() || 'Mom';
     const dadName = document.getElementById('dad-name-input').value.trim() || 'Dad';
-    const grandmaName = document.getElementById('grandma-name-input').value.trim() || 'Grandma';
     const settings = getSettings();
     settings.personNames.Mom = momName;
     settings.personNames.Dad = dadName;
-    settings.personNames.Grandma = grandmaName;
     saveSettings(settings);
     initWelcome();
     closeNameSetup();
@@ -92,7 +84,6 @@ function showBookExport() {
     const settings = getSettings();
     document.getElementById('include-mom-label').textContent = settings.personNames.Mom + "'s Stories";
     document.getElementById('include-dad-label').textContent = settings.personNames.Dad + "'s Stories";
-    document.getElementById('include-grandma-label').textContent = settings.personNames.Grandma + "'s Stories";
     showScreen('book-screen');
 }
 
