@@ -1,10 +1,58 @@
 let currentPerson = null;
 let currentTheme = null;
 let saveTimeout = null;
+let mediaRecorder = null;
+let audioChunks = [];
+let recordingQuestionId = null;
+let recognition = null;
+
+function getSettings() {
+    const raw = localStorage.getItem('story_settings');
+    return raw ? JSON.parse(raw) : { personNames: { Mom: 'Mom', Dad: 'Dad' } };
+}
+
+function saveSettings(settings) {
+    localStorage.setItem('story_settings', JSON.stringify(settings));
+}
+
+function getPersonDisplayName(person) {
+    const settings = getSettings();
+    return settings.personNames[person] || person;
+}
+
+function initWelcome() {
+    const settings = getSettings();
+    document.getElementById('mom-btn-label').textContent = settings.personNames.Mom;
+    document.getElementById('dad-btn-label').textContent = settings.personNames.Dad;
+}
+
+function showNameSetup() {
+    const settings = getSettings();
+    document.getElementById('mom-name-input').value = settings.personNames.Mom;
+    document.getElementById('dad-name-input').value = settings.personNames.Dad;
+    document.getElementById('name-setup-modal').classList.add('visible');
+}
+
+function closeNameSetup() {
+    document.getElementById('name-setup-modal').classList.remove('visible');
+}
+
+function saveNames() {
+    const momName = document.getElementById('mom-name-input').value.trim() || 'Mom';
+    const dadName = document.getElementById('dad-name-input').value.trim() || 'Dad';
+    const settings = getSettings();
+    settings.personNames.Mom = momName;
+    settings.personNames.Dad = dadName;
+    saveSettings(settings);
+    initWelcome();
+    closeNameSetup();
+    showSaveIndicator();
+}
 
 function selectPerson(person) {
     currentPerson = person;
-    document.getElementById('current-person-name').textContent = person + "'s Stories";
+    const displayName = getPersonDisplayName(person);
+    document.getElementById('current-person-name').textContent = displayName + "'s Stories";
     showScreen('questions-screen');
     renderThemes();
     updateProgress();
@@ -13,13 +61,17 @@ function selectPerson(person) {
 function goHome() {
     currentPerson = null;
     currentTheme = null;
+    stopRecording();
     showScreen('welcome-screen');
+    initWelcome();
 }
 
 function goToThemes() {
     currentTheme = null;
+    stopRecording();
     showScreen('questions-screen');
     updateProgress();
+    renderThemes();
 }
 
 function showScreen(screenId) {
@@ -29,6 +81,9 @@ function showScreen(screenId) {
 }
 
 function showBookExport() {
+    const settings = getSettings();
+    document.getElementById('include-mom-label').textContent = settings.personNames.Mom + "'s Stories";
+    document.getElementById('include-dad-label').textContent = settings.personNames.Dad + "'s Stories";
     showScreen('book-screen');
 }
 
@@ -40,12 +95,28 @@ function getPhotoKey(person, themeId, questionId) {
     return `photo_${person}_${themeId}_${questionId}`;
 }
 
+function getCaptionKey(person, themeId, questionId) {
+    return `caption_${person}_${themeId}_${questionId}`;
+}
+
+function getAudioKey(person, themeId, questionId) {
+    return `audio_${person}_${themeId}_${questionId}`;
+}
+
 function getAnswer(person, themeId, questionId) {
     return localStorage.getItem(getStorageKey(person, themeId, questionId)) || '';
 }
 
 function getPhoto(person, themeId, questionId) {
     return localStorage.getItem(getPhotoKey(person, themeId, questionId)) || '';
+}
+
+function getCaption(person, themeId, questionId) {
+    return localStorage.getItem(getCaptionKey(person, themeId, questionId)) || '';
+}
+
+function getAudio(person, themeId, questionId) {
+    return localStorage.getItem(getAudioKey(person, themeId, questionId)) || '';
 }
 
 function saveAnswer(person, themeId, questionId, value) {
@@ -59,6 +130,20 @@ function savePhoto(person, themeId, questionId, dataUrl) {
         showSaveIndicator();
     } catch (e) {
         alert("This photo is too large to save. Please try a smaller image.");
+    }
+}
+
+function saveCaption(person, themeId, questionId, value) {
+    localStorage.setItem(getCaptionKey(person, themeId, questionId), value);
+    showSaveIndicator();
+}
+
+function saveAudioData(person, themeId, questionId, dataUrl) {
+    try {
+        localStorage.setItem(getAudioKey(person, themeId, questionId), dataUrl);
+        showSaveIndicator();
+    } catch (e) {
+        alert("This audio recording is too large to save. Please try a shorter recording.");
     }
 }
 
@@ -144,31 +229,85 @@ function renderQuestions() {
     currentTheme.questions.forEach((q, index) => {
         const answer = getAnswer(currentPerson, currentTheme.id, q.id);
         const photo = getPhoto(currentPerson, currentTheme.id, q.id);
+        const caption = getCaption(currentPerson, currentTheme.id, q.id);
+        const audio = getAudio(currentPerson, currentTheme.id, q.id);
 
         const card = document.createElement('div');
         card.className = 'question-card';
         if (answer.trim()) card.classList.add('answered');
 
-        const photoPreview = photo ? `<div class="photo-preview"><img src="${photo}" alt="Photo"><button class="remove-photo" onclick="removePhoto('${currentTheme.id}', '${q.id}', this)">✕</button></div>` : '';
+        const photoHTML = photo
+            ? `<div class="photo-preview">
+                 <img src="${photo}" alt="Photo">
+                 <button class="remove-photo" onclick="removePhoto('${currentTheme.id}', '${q.id}')">✕</button>
+               </div>
+               <input type="text" class="caption-input" placeholder="Add a caption — who's in this photo? When was it taken?"
+                      value="${escapeAttr(caption)}"
+                      oninput="handleCaption('${currentTheme.id}', '${q.id}', this.value)">`
+            : '';
+
+        const audioHTML = audio
+            ? `<div class="audio-preview">
+                 <audio controls src="${audio}"></audio>
+                 <button class="remove-audio" onclick="removeAudio('${currentTheme.id}', '${q.id}')">✕ Remove recording</button>
+               </div>`
+            : '';
+
+        const voiceBadge = q.voicePrompt
+            ? `<div class="voice-prompt">🎙️ This one's extra special — try recording your voice so your family can hear you tell it.</div>`
+            : '';
+
+        const isRecording = recordingQuestionId === q.id;
+        const recordBtnClass = isRecording ? 'record-btn recording' : 'record-btn';
+        const recordBtnText = isRecording ? '⏹ Stop Recording' : '🎙️ Record Your Voice';
+
+        const followUpHTML = q.followUps && answer.trim()
+            ? `<div class="follow-ups">
+                 <p class="follow-up-label">Want to add more detail?</p>
+                 ${q.followUps.map(f => `<span class="follow-up-chip" onclick="appendFollowUp('${q.id}', this)">${f}</span>`).join('')}
+               </div>`
+            : '';
 
         card.innerHTML = `
             <div class="question-number">Question ${index + 1}</div>
             <label class="question-text" for="q-${q.id}">${q.text}</label>
+            ${voiceBadge}
             <textarea
                 id="q-${q.id}"
                 placeholder="Take your time... write as much or as little as you'd like."
                 oninput="handleInput('${currentTheme.id}', '${q.id}', this.value)"
             >${answer}</textarea>
-            ${photoPreview}
-            <div class="photo-upload">
-                <label class="photo-btn">
-                    📷 Add a Photo
-                    <input type="file" accept="image/*" onchange="handlePhoto('${currentTheme.id}', '${q.id}', this)" hidden>
-                </label>
+            ${followUpHTML}
+            <div class="question-actions">
+                <div class="photo-upload">
+                    <label class="photo-btn">
+                        📷 Add a Photo
+                        <input type="file" accept="image/*" onchange="handlePhoto('${currentTheme.id}', '${q.id}', this)" hidden>
+                    </label>
+                </div>
+                <button class="${recordBtnClass}" onclick="toggleRecording('${currentTheme.id}', '${q.id}')">
+                    ${recordBtnText}
+                </button>
             </div>
+            ${photoHTML}
+            ${audioHTML}
         `;
         container.appendChild(card);
     });
+}
+
+function escapeAttr(str) {
+    return str.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+function appendFollowUp(questionId, chip) {
+    const textarea = document.getElementById('q-' + questionId);
+    const followUpText = chip.textContent;
+    textarea.value = textarea.value.trimEnd() + '\n\n' + followUpText + '\n';
+    textarea.focus();
+    textarea.scrollTop = textarea.scrollHeight;
+    handleInput(currentTheme.id, questionId, textarea.value);
+    chip.classList.add('used');
 }
 
 function handleInput(themeId, questionId, value) {
@@ -183,6 +322,14 @@ function handleInput(themeId, questionId, value) {
             card.classList.remove('answered');
         }
         renderThemes();
+        renderQuestions();
+    }, 800);
+}
+
+function handleCaption(themeId, questionId, value) {
+    clearTimeout(saveTimeout);
+    saveTimeout = setTimeout(() => {
+        saveCaption(currentPerson, themeId, questionId, value);
     }, 500);
 }
 
@@ -221,8 +368,164 @@ function handlePhoto(themeId, questionId, input) {
     reader.readAsDataURL(file);
 }
 
-function removePhoto(themeId, questionId, btn) {
+function removePhoto(themeId, questionId) {
     localStorage.removeItem(getPhotoKey(currentPerson, themeId, questionId));
+    localStorage.removeItem(getCaptionKey(currentPerson, themeId, questionId));
     renderQuestions();
     showSaveIndicator();
 }
+
+function removeAudio(themeId, questionId) {
+    localStorage.removeItem(getAudioKey(currentPerson, themeId, questionId));
+    renderQuestions();
+    showSaveIndicator();
+}
+
+async function toggleRecording(themeId, questionId) {
+    if (mediaRecorder && mediaRecorder.state === 'recording') {
+        stopRecording();
+        return;
+    }
+
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        audioChunks = [];
+        recordingQuestionId = questionId;
+
+        mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm;codecs=opus' });
+
+        mediaRecorder.ondataavailable = (e) => {
+            if (e.data.size > 0) audioChunks.push(e.data);
+        };
+
+        mediaRecorder.onstop = () => {
+            stream.getTracks().forEach(t => t.stop());
+            const blob = new Blob(audioChunks, { type: 'audio/webm' });
+            const reader = new FileReader();
+            reader.onload = () => {
+                saveAudioData(currentPerson, themeId, questionId, reader.result);
+                recordingQuestionId = null;
+                renderQuestions();
+            };
+            reader.readAsDataURL(blob);
+        };
+
+        mediaRecorder.start(1000);
+
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            recognition.continuous = true;
+            recognition.interimResults = true;
+            recognition.lang = 'en-US';
+
+            let finalTranscript = getAnswer(currentPerson, themeId, questionId);
+            if (finalTranscript.trim()) finalTranscript += '\n\n';
+
+            recognition.onresult = (event) => {
+                let interim = '';
+                for (let i = event.resultIndex; i < event.results.length; i++) {
+                    if (event.results[i].isFinal) {
+                        finalTranscript += event.results[i][0].transcript + ' ';
+                    } else {
+                        interim += event.results[i][0].transcript;
+                    }
+                }
+                const textarea = document.getElementById('q-' + questionId);
+                if (textarea) {
+                    textarea.value = finalTranscript + interim;
+                    saveAnswer(currentPerson, themeId, questionId, finalTranscript + interim);
+                }
+            };
+
+            recognition.onerror = () => {};
+            recognition.onend = () => {
+                if (mediaRecorder && mediaRecorder.state === 'recording') {
+                    try { recognition.start(); } catch(e) {}
+                }
+            };
+
+            recognition.start();
+        }
+
+        renderQuestions();
+
+    } catch (err) {
+        alert("Could not access your microphone. Please allow microphone access and try again.");
+        recordingQuestionId = null;
+    }
+}
+
+function stopRecording() {
+    if (recognition) {
+        try { recognition.stop(); } catch(e) {}
+        recognition = null;
+    }
+    if (mediaRecorder && mediaRecorder.state === 'recording') {
+        mediaRecorder.stop();
+    } else {
+        recordingQuestionId = null;
+    }
+}
+
+function exportData() {
+    const data = { version: 2, exportDate: new Date().toISOString(), settings: getSettings(), entries: {} };
+
+    for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key.startsWith('story_') || key.startsWith('photo_') || key.startsWith('caption_') || key.startsWith('audio_')) {
+            data.entries[key] = localStorage.getItem(key);
+        }
+    }
+
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `family-story-backup-${new Date().toISOString().split('T')[0]}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
+function importData() {
+    document.getElementById('import-file-input').click();
+}
+
+function handleImport(input) {
+    const file = input.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const data = JSON.parse(e.target.result);
+            if (!data.entries) {
+                alert("This doesn't look like a valid backup file.");
+                return;
+            }
+
+            if (!confirm(`This will restore a backup from ${new Date(data.exportDate).toLocaleDateString()}. Any existing answers will be overwritten. Continue?`)) {
+                return;
+            }
+
+            if (data.settings) saveSettings(data.settings);
+
+            for (const [key, value] of Object.entries(data.entries)) {
+                localStorage.setItem(key, value);
+            }
+
+            alert("Backup restored successfully!");
+            initWelcome();
+            if (currentPerson) {
+                renderThemes();
+                updateProgress();
+            }
+        } catch (err) {
+            alert("Could not read backup file. Please make sure it's the correct file.");
+        }
+    };
+    reader.readAsText(file);
+    input.value = '';
+}
+
+document.addEventListener('DOMContentLoaded', initWelcome);

@@ -11,6 +11,8 @@ function generateBook() {
     if (includeMom) people.push('Mom');
     if (includeDad) people.push('Dad');
 
+    const settings = getSettings();
+
     let bookHTML = `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -31,8 +33,9 @@ function generateBook() {
         @media print {
             body { font-size: 11pt; }
             .page-break { page-break-before: always; }
-            .no-print { display: none; }
+            .no-print { display: none !important; }
             @page { margin: 1in; }
+            audio { display: none; }
         }
 
         @media screen {
@@ -63,31 +66,16 @@ function generateBook() {
             font-style: italic;
         }
 
+        .cover .featuring {
+            margin-top: 40px;
+            font-size: 1.1em;
+            color: #666;
+        }
+
         .cover .date {
             margin-top: 60px;
             font-size: 0.9em;
             color: #888;
-        }
-
-        .toc {
-            padding: 40px 0;
-        }
-
-        .toc h2 {
-            font-size: 1.8em;
-            margin-bottom: 30px;
-            text-align: center;
-        }
-
-        .toc ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .toc li {
-            padding: 8px 0;
-            border-bottom: 1px dotted #ccc;
-            font-size: 1.1em;
         }
 
         .person-section {
@@ -130,7 +118,6 @@ function generateBook() {
             font-weight: 300;
             font-size: 1em;
             white-space: pre-wrap;
-            padding-left: 0;
             line-height: 2;
         }
 
@@ -146,6 +133,26 @@ function generateBook() {
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
 
+        .photo-caption {
+            font-size: 0.85em;
+            color: #666;
+            font-style: italic;
+            margin-top: 8px;
+            text-align: center;
+        }
+
+        .audio-note {
+            font-size: 0.85em;
+            color: #888;
+            font-style: italic;
+            margin-top: 5px;
+        }
+
+        .audio-note audio {
+            display: block;
+            margin-top: 8px;
+        }
+
         .separator {
             text-align: center;
             margin: 40px 0;
@@ -153,10 +160,15 @@ function generateBook() {
             font-size: 1.5em;
         }
 
-        .print-btn {
+        .print-controls {
             position: fixed;
             top: 20px;
             right: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .print-btn {
             background: #2c5f2d;
             color: white;
             border: none;
@@ -169,21 +181,33 @@ function generateBook() {
         }
 
         .print-btn:hover { background: #1e4620; }
+
+        .audio-btn {
+            background: #8b6914;
+        }
+
+        .audio-btn:hover { background: #6d5310; }
     </style>
 </head>
 <body>
-    <button class="print-btn no-print" onclick="window.print()">🖨️ Print / Save as PDF</button>
+    <div class="print-controls no-print">
+        <button class="print-btn" onclick="window.print()">🖨️ Print / Save as PDF</button>
+    </div>
 
     <div class="cover">
         <h1>Our Family Story</h1>
         <p class="subtitle">A collection of memories, stories, and wisdom</p>
+        <p class="featuring">Featuring the stories of ${people.map(p => settings.personNames[p]).join(' & ')}</p>
         <p class="date">Created with love, ${new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long' })}</p>
     </div>
 `;
 
+    let hasAnyAudio = false;
+
     people.forEach(person => {
+        const displayName = settings.personNames[person];
         bookHTML += `<div class="page-break person-section">`;
-        bookHTML += `<h2 class="person-title">${person}'s Story</h2>`;
+        bookHTML += `<h2 class="person-title">${displayName}'s Story</h2>`;
 
         THEMES.forEach(theme => {
             const answeredQuestions = theme.questions.filter(q =>
@@ -198,13 +222,24 @@ function generateBook() {
             answeredQuestions.forEach((q, i) => {
                 const answer = getAnswer(person, theme.id, q.id);
                 const photo = getPhoto(person, theme.id, q.id);
+                const caption = getCaption(person, theme.id, q.id);
+                const audio = getAudio(person, theme.id, q.id);
 
                 bookHTML += `<div class="question-block">`;
                 bookHTML += `<p class="question-prompt">${q.text}</p>`;
                 bookHTML += `<p class="question-answer">${escapeHtml(answer)}</p>`;
 
                 if (photo) {
-                    bookHTML += `<div class="question-photo"><img src="${photo}" alt="Photo"></div>`;
+                    bookHTML += `<div class="question-photo"><img src="${photo}" alt="Photo">`;
+                    if (caption) {
+                        bookHTML += `<p class="photo-caption">${escapeHtml(caption)}</p>`;
+                    }
+                    bookHTML += `</div>`;
+                }
+
+                if (audio) {
+                    hasAnyAudio = true;
+                    bookHTML += `<p class="audio-note no-print">🎙️ Voice recording available: <audio controls src="${audio}"></audio></p>`;
                 }
 
                 bookHTML += `</div>`;
