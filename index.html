@@ -25,6 +25,10 @@
                         <span class="person-icon">👨</span>
                         <span id="dad-btn-label">Dad</span>
                     </button>
+                    <button class="person-btn" onclick="selectPerson('Grandma')">
+                        <span class="person-icon">👵</span>
+                        <span id="grandma-btn-label">Grandma</span>
+                    </button>
                 </div>
                 <div class="home-actions">
                     <button class="link-btn" onclick="showBookExport()">📖 Create the Book</button>
@@ -69,6 +73,7 @@
                 <div class="book-person-select">
                     <label><input type="checkbox" id="include-mom" checked> <span id="include-mom-label">Mom's Stories</span></label>
                     <label><input type="checkbox" id="include-dad" checked> <span id="include-dad-label">Dad's Stories</span></label>
+                    <label><input type="checkbox" id="include-grandma" checked> <span id="include-grandma-label">Grandma's Stories</span></label>
                 </div>
                 <button class="export-btn" onclick="generateBook()">📖 Generate Printable Book</button>
                 <p class="hint">This will open a beautifully formatted page. Use your browser's Print function (Ctrl+P or Cmd+P) to save as PDF or print directly.</p>
@@ -88,6 +93,10 @@
                 <label>
                     👨 Dad's name
                     <input type="text" id="dad-name-input" placeholder="Dad">
+                </label>
+                <label>
+                    👵 Grandma's name
+                    <input type="text" id="grandma-name-input" placeholder="Grandma">
                 </label>
             </div>
             <div class="modal-buttons">

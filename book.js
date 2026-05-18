@@ -1,8 +1,9 @@
 function generateBook() {
     const includeMom = document.getElementById('include-mom').checked;
     const includeDad = document.getElementById('include-dad').checked;
+    const includeGrandma = document.getElementById('include-grandma').checked;
 
-    if (!includeMom && !includeDad) {
+    if (!includeMom && !includeDad && !includeGrandma) {
         alert("Please select at least one person to include.");
         return;
     }
@@ -10,6 +11,7 @@ function generateBook() {
     const people = [];
     if (includeMom) people.push('Mom');
     if (includeDad) people.push('Dad');
+    if (includeGrandma) people.push('Grandma');
 
     const settings = getSettings();
 
