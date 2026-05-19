@@ -1,6 +1,7 @@
 let currentPerson = null;
 let currentTheme = null;
 let saveTimeout = null;
+let indicatorTimeout = null;
 let mediaRecorder = null;
 let audioChunks = [];
 let recordingQuestionId = null;
@@ -151,11 +152,11 @@ function showSaveIndicator() {
     const indicator = document.getElementById('save-indicator');
     indicator.classList.remove('hidden');
     indicator.classList.add('visible');
-    clearTimeout(saveTimeout);
-    saveTimeout = setTimeout(() => {
+    clearTimeout(indicatorTimeout);
+    indicatorTimeout = setTimeout(() => {
         indicator.classList.remove('visible');
         indicator.classList.add('hidden');
-    }, 2000);
+    }, 1000);
 }
 
 function countAnswered(person) {
@@ -296,15 +297,12 @@ function handleInput(themeId, questionId, value) {
     clearTimeout(saveTimeout);
     saveTimeout = setTimeout(() => {
         saveAnswer(currentPerson, themeId, questionId, value);
-        updateProgress();
         const card = document.getElementById('q-' + questionId).closest('.question-card');
         if (value.trim()) {
             card.classList.add('answered');
         } else {
             card.classList.remove('answered');
         }
-        renderThemes();
-        renderQuestions();
     }, 800);
 }
 
